@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title></title>
+    <style>
+
+      li{
+        list-style: none;
+      }
+      ul,li {
+        padding: 0;
+        margin:0;
+        -transition: .5s;
+      }
+  .fold_wrap{width:1200px;overflow:hidden;margin:0 auto;}
+  .fold_wrap ul{width:1200px;height:260px;margin:0 auto;overflow:hidden;}
+  .fold_wrap  ul li{float:left;width:130px;height:260px;position:relative;overflow:hidden;cursor:pointer;}
+    </style>
+    <script src="jquery-2.2.2.min.js"></script>
+    <script>
+      window.onload = function(){
+        var sm = $("#sm");
+        var lis  = sm.find("li");
+        var totalW = sm.width();
+        var imgW = 400;
+        var len = lis.size();
+        var otherW = Math.floor((totalW-imgW)/(len-1));
+        var shareW = Math.floor(totalW/len);
+        lis.width(otherW);
+        lis.eq(0).animate({width:imgW});
+
+        var timer1,timer2;
+        lis.on("mouseover",function(){
+          clearInterval(timer1);
+          clearInterval(timer2);
+          timer1 = setInterval(()=>{
+            var currentW = $(this).width();
+            if(currentW<400){
+              var otherTotalW = 0 ;
+              lis.each((index,item)=>{
+                if(item!==this){
+                  var ow = $(item).width(),speed =0 ;
+                  if(ow>otherW){
+                    speed = Math.floor((ow-otherW)/6);
+                    speed = speed >0 ?speed:1;
+                    var otw = ow -speed;
+                    $(item).width(otw)
+                  }
+                  //局部变量在 each 方法中实现累加 达到6张图片减小宽度的总和
+                  otherTotalW+=ow -speed;
+                }
+              })
+              var  w = totalW -otherTotalW;
+              if(w > imgW)  w = imgW;
+              $(this).css({
+                width:w
+              })
+            }else{
+              clearInterval(timer1);
+              clearInterval(timer2);
+            }
+          },30)
+        })
+        .on("mouseout",function(){
+          clearInterval(timer1);
+          clearInterval(timer2);
+          timer2 = setInterval(()=>{
+            var currentW = $(this).width();
+            if(currentW>shareW){
+              var otherTotalW = 0;
+              lis.each((index,item)=>{
+                if(item!=this){
+                  var ow = $(item).width(),speed = 0 ;
+                  if(ow<shareW){
+                    speed = Math.floor((shareW-ow)/6);
+                    speed = speed>0?speed:1;
+                    $(item).width(ow+speed);
+                  }
+                  otherTotalW+=ow+speed;
+                }
+              });
+              var w = totalW-otherTotalW;
+              $(this).width(w)
+            }else{
+              clearInterval(timer1);
+              clearInterval(timer2);
+            }
+          },30)
+        })
+      }
+    </script>
+  </head>
+
+  <body>
+      <div class="fold_wrap">
+        <ul class="clearfix" id="sm">
+            <li>
+              <div style="height:100%;background: url(img/1.jpg) no-repeat center 0;"></div>
+            </li>
+            <li>
+
+              <div style="height:100%;background: url(img/2.jpg) no-repeat center 0;"></div>
+            </li>
+            <li>
+              <div style="height:100%;background: url(img/3.jpg) no-repeat center 0;"></div>
+            </li>
+            <li>
+              <div style="height:100%;background: url(img/4.jpg) no-repeat center 0;"></div>
+            </li>
+            <li>
+              <div style="height:100%;background: url(img/5.jpg) no-repeat center 0;"></div>
+            </li>
+            <li>
+              <div style="height:100%;background: url(img/6.jpg) no-repeat center 0;"></div>
+            </li>
+            <li>
+              <div style="height:100%;background: url(img/7.jpg) no-repeat center 0;"></div>
+            </li>
+        </ul>
+      </div>
+
+  </body>
+</html>
